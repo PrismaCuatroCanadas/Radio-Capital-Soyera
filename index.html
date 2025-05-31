@@ -38,8 +38,7 @@
       align-items: center;
       background: rgba(0, 0, 0, 0.8);
       z-index: 1000;
-      height: 90px;
-      padding: 0 10px;
+      height: 95px;
     }
 
     .nav-button {
@@ -47,14 +46,13 @@
       flex-direction: column;
       align-items: center;
       color: white;
-      font-size: 13px;
+      font-size: 10px;
       text-align: center;
-      margin-top: 5px;
     }
 
     .nav-button button {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       border: none;
       background-size: cover;
@@ -65,7 +63,7 @@
     }
 
     .nav-button button.active {
-      transform: scale(1.2);
+      transform: scale(1.1);
       outline: 3px solid #00bfff;
       box-shadow: 0 0 15px 5px rgba(0, 191, 255, 0.6);
     }
@@ -86,20 +84,22 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 40px;
+      margin-top: 30px;
       flex-direction: column;
+      position: relative;
     }
 
     .play-button button {
-      width: 160px;
-      height: 160px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: none;
       background: url('play.png') no-repeat center center;
       background-size: contain;
       box-shadow: 0 4px 10px rgba(80, 80, 80, 0.4);
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 1s ease;
+      position: relative;
     }
 
     .play-button button:hover {
@@ -107,18 +107,18 @@
     }
 
     .status-text {
-      margin-top: 20px;
+      margin-top: 10px;
       color: white;
-      font-size: 20px;
+      font-size: 15px;
       font-weight: bold;
       text-transform: uppercase;
     }
 
     #ondas {
-      margin-top: 20px;
-      width: 150px;
+      margin-top: 0px;
+      width: 100px;
       height: auto;
-      display: none;
+      visibility: hidden;
       animation: pulse 2s infinite;
     }
 
@@ -126,6 +126,28 @@
       0% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.05); opacity: 0.8; }
       100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* EN VIVO badge */
+    #enVivo {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 0, 0, 0.651);
+      color: white;
+      padding: 2px 6px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 5px;
+      animation: blink 3s infinite;
+      display: none;
+      z-index: 10;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     iframe {
@@ -141,17 +163,18 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-top: 0px;
     }
 
     .titulo-con-logo img {
-      height: 40px;
+      height: 50px;
     }
 
     .tv-button {
       position: fixed;
-      top: 150px;
+      top: 100px;
       right: 20px;
-      background: rgba(255, 0, 0, 0.534);
+      background: rgba(255, 0, 0, 0.61);
       color: white;
       border: none;
       border-radius: 30px;
@@ -165,7 +188,7 @@
     .tv-dropdown {
       display: none;
       position: fixed;
-      top: 200px;
+      top: 150px;
       right: 20px;
       background-color: #111;
       border-radius: 10px;
@@ -190,209 +213,192 @@
     }
 
     .banner-carousel {
-    position: fixed;
-    bottom: 90px; /* Justo encima de la barra de navegación inferior */
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    z-index: 1000;
-    background-color: #000;
-  }
+      position: fixed;
+      bottom: 95px;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+      z-index: 1000;
+      background-color: #00000000;
+    }
 
-  .banner-carousel a {
-    display: none;
-    width: 100%;
-  }
+    .banner-carousel a {
+      display: none;
+      width: 100%;
+    }
 
-  .banner-carousel img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+    .banner-carousel img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-  .banner-carousel a.active {
-    display: block;
-  }
+    .banner-carousel a.active {
+      display: block;
+    }
 
-  @media (min-width: 768px) {
-  .banner-carousel {
-    display: flex;
-    justify-content: center;
-  }
+    @media (min-width: 768px) {
+      .banner-carousel {
+        display: flex;
+        justify-content: center;
+      }
 
-  .banner-carousel a {
-    width: 50%; /* o 80%, ajusta según gusto */
-  }
+      .banner-carousel a {
+        width: 50%;
+      }
 
-  .banner-carousel img {
-    width: 100%;
-    height: auto;
-  }
-}
-
+      .banner-carousel img {
+        width: 100%;
+        height: auto;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Botón flotante de TV -->
-  <button class="tv-button" onclick="toggleTVMenu()">TV 📺</button>
-  <div class="tv-dropdown" id="tvDropdown">
-    <a href="https://www.dailymotion.com/video/x9ie7h0" target="_blank">RED UNO</a>
-    <a href="https://www.dailymotion.com/video/x7wzxiw" target="_blank">UNITEL</a>
-  </div>
+<!-- Botón flotante de TV -->
+<button class="tv-button" onclick="toggleTVMenu()">TV 📺</button>
+<div class="tv-dropdown" id="tvDropdown">
+  <a href="https://www.dailymotion.com/video/x9ie7h0" target="_blank">RED UNO</a>
+  <a href="https://www.dailymotion.com/video/x7wzxiw" target="_blank">UNITEL</a>
+</div>
 
-  <!-- RADIO -->
+<!-- RADIO -->
 <div id="radio" class="tab-content active">
-  <h3 class="titulo-con-logo">
+  <h4 class="titulo-con-logo">
     <img src="logo capital soyera.png" alt="Logo Capital Soyera" />
     RADIO LA VOZ DE LA CAPITAL SOYERA
-  </h3>
+  </h4>
   <div class="play-button">
+    <div id="enVivo">EN VIVO</div>
     <button id="playBtn" onclick="toggleRadio()"></button>
     <div id="statusText" class="status-text">REPRODUCIR</div>
     <img id="ondas" src="ondas de radio.webp" alt="ondas de radio" />
+    </div>
+
+  <div style="text-align: center; margin-top: 10px; font-size: 16px;">
+    ESCÚCHANOS ONLINE 24/7<br>
+    <span style="color: rgb(255, 217, 0);">INCLUSO CON LA PANTALLA BLOQUEADA.</span><br>
+    ¡Ideal para trabajar, estudiar o en tu momento de relax!
   </div>
 
-  <!-- TEXTO ENCIMA DE REDES SOCIALES -->
-  <div style="text-align: center; margin-top: 30px; font-size: 16px;">
-    Escúchanos online 24/7, INCLUSO CON LA PANTALLA BLOQUEADA.
-    ¡Ideal para trabajar, estudiar o en tu momento de relajación!
+  <div style="display: flex; gap: 20px; padding-top: 50px; justify-content: center;">
+    <a href="https://wa.me/59160025300" target="_blank"><img src="icono-whatsapp.png" alt="WhatsApp" style="width: 50px;"></a>
+    <a href="https://www.facebook.com/capitalsoyera" target="_blank"><img src="icono-facebook.png" alt="Facebook" style="width: 50px;"></a>
+    <a href="https://www.tiktok.com/@capitalsoyera.noticias" target="_blank"><img src="icono-tiktok.png" alt="TikTok" style="width: 50px;"></a>
+    <a href="https://www.youtube.com/@ArqZen" target="_blank"><img src="icono-youtube.png" alt="YouTube" style="width: 50px;"></a>
   </div>
 
-  <div style="display: flex; gap: 15px; margin: 15px auto; justify-content: center;">
-    <a href="https://wa.me/59160025300" target="_blank" title="WhatsApp">
-      <img src="icono-whatsapp.png" alt="WhatsApp" style="width: 40px; height: 40px;">
-    </a>
-    <a href="https://www.facebook.com/capitalsoyera" target="_blank" title="Facebook">
-      <img src="icono-facebook.png" alt="Facebook" style="width: 40px; height: 40px;">
-    </a>
-    <a href="https://www.tiktok.com/@capitalsoyera.noticias" target="_blank" title="TikTok">
-      <img src="icono-tiktok.png" alt="TikTok" style="width: 40px; height: 40px;">
-    </a>
-    <a href="https://www.youtube.com/@ArqZen" target="_blank" title="YouTube">
-      <img src="icono-youtube.png" alt="YouTube" style="width: 40px; height: 40px;">
-    </a>
-  </div>
-
-  <!-- TEXTO DEBAJO DE REDES SOCIALES -->
   <div style="text-align: center; font-size: 14px; margin-bottom: 20px;">
     ¡Síguenos en todas nuestras redes sociales!
   </div>
 </div>
 
-  <!-- INFO -->
-  <div id="info" class="tab-content">
-    <h3 class="titulo-con-logo">
-      <img src="logo capital soyera noticias.png" alt="Logo Noticias" />
-      CAPITAL SOYERA NOTICIAS
-    </h3>
-    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fcapitalsoyera&tabs=timeline&width=350&height=700" scrolling="no" allowfullscreen="true"></iframe>
+<!-- INFO -->
+<div id="info" class="tab-content">
+  <h4 class="titulo-con-logo">
+    <img src="logo capital soyera noticias.png" alt="Logo Noticias" />
+    CAPITAL SOYERA NOTICIAS
+  </h4>
+  <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fcapitalsoyera&tabs=timeline&width=350&height=700" scrolling="no" allowfullscreen="true"></iframe>
+</div>
+
+<!-- BUSCADOR -->
+ <div id="buscador" class="tab-content">
+  <h4 class="titulo-con-logo">
+    <img src="boton buscador.png" alt="Logo Noticias" />
+    ENCUENTRA LO QUE NECESITAS EN CUATRO CAÑADAS
+  </h4>
+  <iframe src="lista.html"></iframe>
+ </div>
+
+<!-- BANNER ROTATIVO -->
+ <div class="banner-carousel">
+  <a href="https://wa.me/59160025300" target="_blank"><img src="banner1.png" alt="Banner 1"></a>
+  <a href="https://wa.me/59170037128" target="_blank"><img src="banner2.png" alt="Banner 2"></a>
+  <a href="https://www.facebook.com/Arquitecto.David.Yonatan" target="_blank"><img src="banner3.png" alt="Banner 3"></a>
+ </div>
+
+<!-- NAVEGACIÓN INFERIOR -->
+<nav class="bottom-nav">
+  <div class="nav-button">
+    <button class="btn-info" onclick="mostrarTab('info', this)"></button>
+    <span>NOTICIAS DE</span><span>CUATRO CAÑADAS</span>
   </div>
-
-  <!-- BUSCADOR -->
-  <div id="buscador" class="tab-content">
-    <h4 class="titulo-con-logo">
-      <img src="boton buscador.png" alt="Logo Noticias" />
-      ENCUENTRA LO QUE NECESITAS EN CUATRO CAÑADAS
-    </h4>
-    <iframe src="lista corta.html"></iframe>
+  <div class="nav-button">
+    <button class="btn-radio active" onclick="mostrarTab('radio', this)"></button>
+    <span>RADIO</span><span>CAPITAL SOYERA</span>
   </div>
-
-  <!-- 🔄 Banner rotativo -->
-  <div class="banner-carousel">
-    <a href="https://wa.me/59160025300" target="_blank">
-      <img src="banner1.JPG" alt="Banner 1">
-    </a>
-    <a href="https://maps.app.goo.gl/tulink" target="_blank">
-      <img src="banner2.JPG" alt="Banner 2">
-    </a>
-    <a href="https://tupagina.com" target="_blank">
-      <img src="banner3.JPG" alt="Banner 3">
-    </a>
+  <div class="nav-button">
+    <button class="btn-buscador" onclick="mostrarTab('buscador', this)"></button>
+    <span>CONECTA</span><span>CUATRO CAÑADAS</span>
   </div>
+</nav>
 
-  <!-- Navegación inferior -->
-  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
-    <div class="nav-button">
-      <button class="btn-info" aria-label="Capital Soyera Noticias" onclick="mostrarTab('info', this)"></button>
-      <span>NOTICIAS</span>
-    </div>
-    <div class="nav-button">
-      <button class="btn-radio active" aria-label="Radio" onclick="mostrarTab('radio', this)"></button>
-      <span>RADIO</span>
-    </div>
-    <div class="nav-button">
-      <button class="btn-buscador" aria-label="Buscador" onclick="mostrarTab('buscador', this)"></button>
-      <span>BUSCAR</span>
-    </div>
-  </nav>
+<script>
+  function mostrarTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
 
-  <!-- JavaScript -->
-  <script>
-    function mostrarTab(tabId, btn) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
+    document.querySelectorAll('.bottom-nav button').forEach(button => button.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tvButton = document.querySelector('.tv-button');
+    const tvDropdown = document.getElementById('tvDropdown');
+    if (tabId === 'radio') {
+      tvButton.style.display = 'block';
+    } else {
+      tvButton.style.display = 'none';
+      tvDropdown.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    mostrarTab('radio', document.querySelector('.btn-radio'));
+  });
+
+  let radioReproduciendo = false;
+  let audio = new Audio('https://play.radioking.io/capital-soyera3');
+
+  function toggleRadio() {
+    const playBtn = document.getElementById('playBtn');
+    const statusText = document.getElementById('statusText');
+    const ondas = document.getElementById('ondas');
+    const enVivo = document.getElementById('enVivo');
+
+    if (!radioReproduciendo) {
+      audio.play().then(() => {
+        radioReproduciendo = true;
+        playBtn.style.backgroundImage = "url('pausa.png')";
+        statusText.textContent = 'DETENER';
+        ondas.style.visibility = 'visible';
+        enVivo.style.display = 'block';
+      }).catch(() => {
+        alert('No se pudo reproducir la radio.');
       });
-      document.getElementById(tabId).classList.add('active');
-
-      document.querySelectorAll('.bottom-nav button').forEach(button => {
-        button.classList.remove('active');
-      });
-      btn.classList.add('active');
-
-      const tvButton = document.querySelector('.tv-button');
-      const tvDropdown = document.getElementById('tvDropdown');
-      if (tabId === 'radio') {
-        tvButton.style.display = 'block';
-      } else {
-        tvButton.style.display = 'none';
-        tvDropdown.style.display = 'none';
-      }
+    } else {
+      audio.pause();
+      radioReproduciendo = false;
+      playBtn.style.backgroundImage = "url('play.png')";
+      statusText.textContent = 'REPRODUCIR';
+      ondas.style.visibility = 'hidden';
+      enVivo.style.display = 'none';
     }
+  }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      mostrarTab('radio', document.querySelector('.btn-radio'));
-    });
+  function toggleTVMenu() {
+    const dropdown = document.getElementById('tvDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
 
-    let radioReproduciendo = false;
-    let audio = new Audio('https://play.radioking.io/capital-soyera3');
-
-    function toggleRadio() {
-      const playBtn = document.getElementById('playBtn');
-      const statusText = document.getElementById('statusText');
-      const ondas = document.getElementById('ondas');
-
-      if (!radioReproduciendo) {
-        audio.play().then(() => {
-          radioReproduciendo = true;
-          playBtn.style.backgroundImage = "url('pausa.png')";
-          statusText.textContent = 'DETENER';
-          ondas.style.display = 'block';
-        }).catch(() => {
-          alert('No se pudo reproducir la radio.');
-        });
-      } else {
-        audio.pause();
-        radioReproduciendo = false;
-        playBtn.style.backgroundImage = "url('play.png')";
-        statusText.textContent = 'REPRODUCIR';
-        ondas.style.display = 'none';
-      }
+  window.addEventListener('click', (e) => {
+    if (!e.target.matches('.tv-button')) {
+      document.getElementById('tvDropdown').style.display = 'none';
     }
+  });
 
-    function toggleTVMenu() {
-      const dropdown = document.getElementById('tvDropdown');
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-
-    window.addEventListener('click', (e) => {
-      if (!e.target.matches('.tv-button')) {
-        document.getElementById('tvDropdown').style.display = 'none';
-      }
-    });
-
-    // Banner rotativo
-    const banners = document.querySelectorAll('.banner-carousel a');
+  // Banner rotativo
+  const banners = document.querySelectorAll('.banner-carousel a');
   let currentBanner = 0;
 
   function showNextBanner() {
@@ -401,11 +407,8 @@
     banners[currentBanner].classList.add('active');
   }
 
-  // Inicializar el primer banner
   banners[0].classList.add('active');
-
-  // Cambiar cada 8 segundos
   setInterval(showNextBanner, 8000);
-  </script>
+</script>
 </body>
 </html>
