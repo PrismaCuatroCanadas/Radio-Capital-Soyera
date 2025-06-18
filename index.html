@@ -404,6 +404,13 @@
     }
     radio.play();
     radioReproduciendo = true;
+    
+gtag('event', 'inicio_radio', {
+  'event_category': 'Radio',
+  'event_label': window.location.href,
+  'non_interaction': true
+});
+    
     document.getElementById("playBtn").style.backgroundImage = "url('pausa.png')";
     document.getElementById("statusText").innerText = "DETENER";
     document.getElementById("ondas").style.visibility = "visible";
@@ -444,6 +451,17 @@
     bannerIndex = (bannerIndex + 1) % banners.length;
     banners[bannerIndex].classList.add('active');
   }, 5000);
+  
+  // Enviar evento a Google Analytics cada 5 minutos si la radio está reproduciéndose
+setInterval(() => {
+  if (radioReproduciendo) {
+    gtag('event', 'reproduciendo_radio', {
+      'event_category': 'Radio',
+      'event_label': currentURL,
+      'non_interaction': true
+    });
+  }
+}, 300000); // 300000 ms = 5 minutos
 </script>
 </body>
 </html>
