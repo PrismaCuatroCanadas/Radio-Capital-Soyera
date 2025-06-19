@@ -359,16 +359,18 @@
   const horarios = [
     { inicio: "00:05", fin: "04:00", url: "https://stream.zeno.fm/p7f3wyxmh5zuv" },
     { inicio: "07:30", fin: "09:05", url: "https://srv3.elittehosting.com:8060/stream" },
-    { inicio: "11:04", fin: "11:59", url: "https://stream.zeno.fm/p7f3wyxmh5zuv" },
-    { inicio: "12:11", fin: "12:55", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
-    { inicio: "13:07", fin: "13:40", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
-    { inicio: "20:00", fin: "20:33", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
+    { inicio: "11:04", fin: "11:59", url: "https://stream-169.zeno.fm/qmhf2yd9dm0uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJxbWhmMnlkOWRtMHV2IiwiaG9zdCI6InN0cmVhbS0xNjkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlpJN1I5WEt0VG1PSlh3Skc0NEJzM1EiLCJpYXQiOjE3NTAzNDk1MTEsImV4cCI6MTc1MDM0OTU3MX0.XxP4zkm-KO6BMwERkCZl3EAy9GfCG1Uv8lAQIqAu5iM&dyn-uid=822578098680017050&an-uid=0&dot-uid=0c1222040087998c368ac3c5&triton-uid=cookie%3A27e14af3-7fa4-4d4b-80d8-bb30591b18cf&amb-uid=7615549531090398872&adtonosListenerId=01JM59DWGA9ESXHV8GCB55XFJJ&aw_0_req_lsid=18910684c2944abeb041c5887d30c7aa" },
+    { inicio: "12:11", fin: "12:55", url: "https://n9.cl/u9ildmv" },
+    { inicio: "13:07", fin: "13:37", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
+    { inicio: "13:37", fin: "13:59", url: "https://n9.cl/u9ildm" },
+    { inicio: "14:04", fin: "14:59", url: "https://stream-169.zeno.fm/qmhf2yd9dm0uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJxbWhmMnlkOWRtMHV2IiwiaG9zdCI6InN0cmVhbS0xNjkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlpJN1I5WEt0VG1PSlh3Skc0NEJzM1EiLCJpYXQiOjE3NTAzNDk1MTEsImV4cCI6MTc1MDM0OTU3MX0.XxP4zkm-KO6BMwERkCZl3EAy9GfCG1Uv8lAQIqAu5iM&dyn-uid=822578098680017050&an-uid=0&dot-uid=0c1222040087998c368ac3c5&triton-uid=cookie%3A27e14af3-7fa4-4d4b-80d8-bb30591b18cf&amb-uid=7615549531090398872&adtonosListenerId=01JM59DWGA9ESXHV8GCB55XFJJ&aw_0_req_lsid=18910684c2944abeb041c5887d30c7aa" },
+    { inicio: "20:04", fin: "20:33", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
     { inicio: "22:03", fin: "22:59", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
     { inicio: "23:05", fin: "23:59", url: "https://stream-152.zeno.fm/pnwpbyfambruv" },
     { inicio: "04:00", fin: "05:00", url: "https://uk6freenew.listen2myradio.com/live.mp3?typeportmount=s1_3501_stream_989041836" },
     { inicio: "00:00", fin: "23:59", url: "https://play.radioking.io/speed-metal-radio52" }
   ];
-
+  
   function convertirHoraAMinutos(horaStr) {
     const [h, m] = horaStr.split(":").map(Number);
     return h * 60 + m;
@@ -400,7 +402,7 @@
   function reproducirRadio() {
     const nuevaURL = obtenerURLActualSegunHora();
     if (currentURL !== nuevaURL) {
-      radio.src = nuevaURL + "?t=" + Date.now();
+      radio.src = nuevaURL;
       currentURL = nuevaURL;
     }
     radio.play();
