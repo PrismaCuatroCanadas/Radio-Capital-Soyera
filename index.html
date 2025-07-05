@@ -357,10 +357,10 @@
   }
 
   const horarios = [
-    // Radio Max
-    { inicio: "00:05", fin: "04:00", url: "https://stream-171.zeno.fm/6ww6y8v8dy3uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2d3c2eTh2OGR5M3V2IiwiaG9zdCI6InN0cmVhbS0xNzEuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6ImxrekhIc3ZZUUd1bFBJaEt0WlVUQ1EiLCJpYXQiOjE3NTE3NTMwOTUsImV4cCI6MTc1MTc1MzE1NX0.4F5jtkstt8P2Bg4BzJ0FtNleJIii6qv9HFKJ7KmzAkk&dyn-uid=4481372279002540163&an-uid=0&dot-uid=0c2322040006221329850604&triton-uid=cookie%3A897cc4f9-659e-4dc4-9f8d-cf33fd08bfc6&amb-uid=7744793113983960827&adtonosListenerId=01JM59DWGA9ESXHV8GCB55XFJJ&aw_0_req_lsid=77e23ffc211b4a9ef8503e83166ef021" },
+    // Radio Mix tropicales
+    { inicio: "00:05", fin: "04:00", url: "https://stream.zeno.fm/esgo1lafgtstv?dyn-uid=4481372279002540163&an-uid=0&dot-uid=0c2322040006221329850604&triton-uid=cookie%3A897cc4f9-659e-4dc4-9f8d-cf33fd08bfc6&amb-uid=7744793113983960827&adtonosListenerId=01JM59DWGA9ESXHV8GCB55XFJJ&aw_0_req_lsid=77e23ffc211b4a9ef8503e83166ef021" },
     // La Cafeteria
-    { inicio: "07:30", fin: "09:05", url: "https://srv3.elittehosting.com:8010/stream" },
+    { inicio: "07:30", fin: "08:58", url: "https://srv3.elittehosting.com:8010/stream" },
     // Regueton 100%
     { inicio: "11:02", fin: "11:58", url: "https://stream-169.zeno.fm/qmhf2yd9dm0uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJxbWhmMnlkOWRtMHV2IiwiaG9zdCI6InN0cmVhbS0xNjkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlpJN1I5WEt0VG1PSlh3Skc0NEJzM1EiLCJpYXQiOjE3NTAzNDk1MTEsImV4cCI6MTc1MDM0OTU3MX0.XxP4zkm-KO6BMwERkCZl3EAy9GfCG1Uv8lAQIqAu5iM&dyn-uid=822578098680017050&an-uid=0&dot-uid=0c1222040087998c368ac3c5&triton-uid=cookie%3A27e14af3-7fa4-4d4b-80d8-bb30591b18cf&amb-uid=7615549531090398872&adtonosListenerId=01JM59DWGA9ESXHV8GCB55XFJJ&aw_0_req_lsid=18910684c2944abeb041c5887d30c7aa" },
     // Deportivo
@@ -394,11 +394,11 @@
   const dia = fecha.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
   const minutos = fecha.getHours() * 60 + fecha.getMinutes();
 
-  if (dia === 6 || dia === 0) {
-    // Sábado (6) o Domingo (0) => usar solo el primer enlace
+  if (dia === 0) {
+    // Domingo => usar solo el primer enlace
     return horarios[0].url;
   } else {
-    // Lunes a Viernes => aplicar según horario
+    // Lunes a Sábado => aplicar según horario
     for (let slot of horarios) {
       if (minutos >= convertirHoraAMinutos(slot.inicio) && minutos <= convertirHoraAMinutos(slot.fin)) {
         return slot.url;
@@ -407,6 +407,7 @@
     return horarios[horarios.length - 1].url;
   }
 }
+
 
   let radio = new Audio();
   let radioReproduciendo = false;
