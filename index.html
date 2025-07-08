@@ -431,7 +431,7 @@
   function reproducirRadio() {
     const nuevaURL = obtenerURLActualSegunHora();
     if (currentURL !== nuevaURL) {
-      radio.src = nuevaURL;
+      radio.src = nuevaURL + "?_=" + new Date().getTime();  // <-- aquí agregué el parámetro anti-cache
       currentURL = nuevaURL;
     }
     radio.play();
