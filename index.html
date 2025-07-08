@@ -495,5 +495,16 @@ setInterval(() => {
   }
 }, 300000); // 300000 ms = 5 minutos
 </script>
+  <script>
+  function abrirApp(appURL, fallbackURL) {
+    const timeout = setTimeout(() => {
+      window.open(fallbackURL, '_blank');
+    }, 1000);
+
+    window.location = appURL;
+
+    window.addEventListener('blur', () => clearTimeout(timeout));
+  }
+</script>
 </body>
 </html>
