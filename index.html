@@ -288,6 +288,22 @@
     <span style="color: yellow;">INCLUSO CON LA PANTALLA BLOQUEADA.</span><br>
     ¡Ideal para trabajar, estudiar o en tu momento de relax!
   </div>
+
+  <!-- BOTÓN DE PROGRAMACIÓN -->
+<div style="text-align: center; margin-top: 10px;">
+  <button onclick="mostrarProgramacion()" style="background: #28a745; border: none; padding: 8px 16px; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 14px;">
+    📅 Programación
+  </button>
+</div>
+
+<!-- MODAL CON IMAGEN OCULTO AL INICIO -->
+<div id="modalProgramacion" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 0; margin: 0;">
+  <div style="position: relative; max-width: 95vw; max-height: 95vh;">
+    <img src="programacion.jpg" alt="Programación" style="width: 100%; height: auto; border-radius: 8px; max-height: 90vh;" />
+    <button onclick="cerrarProgramacion()" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; font-size: 18px; cursor: pointer;">×</button>
+  </div>
+</div>
+
   <div style="display: flex; gap: 20px; justify-content: center; margin-top: 50px;">
     <a href="https://wa.me/59160025300" target="_blank"><img src="icono-whatsapp.png" style="width: 50px;"></a>
     <a href="#" onclick="abrirApp('fb://facewebmodal/f?href=https://www.facebook.com/capitalsoyera', 'https://www.facebook.com/capitalsoyera'); return false;"><img src="icono-facebook.png" style="width: 50px;"></a>
@@ -341,30 +357,16 @@
 </nav>
 
 <script>
-  function mostrarTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    document.querySelector('.tv-button').style.display = tabId === 'radio' ? 'block' : 'none';
-    document.getElementById('tvDropdown').style.display = 'none';
-  }
-
-  function toggleTVMenu() {
-    const menu = document.getElementById('tvDropdown');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-  }
-
+  // ==== CONFIGURACIÓN DE HORARIOS ====
   const horarios = [
     // Mix tropicales
-    { inicio: "00:05", fin: "04:00", url: "https://stream.zeno.fm/esgo1lafgtstv" },
+    { inicio: "00:05", fin: "04:58", url: "https://stream.zeno.fm/esgo1lafgtstv" },
     // Nacionales David de 5am a 7:20
     // La Cafeteria
     { inicio: "07:20", fin: "08:14", url: "https://srv3.elittehosting.com:8010/stream" },
     // Cumbia david 8:15 a 9am
-    // Tropicalisimo
-    { inicio: "09:03", fin: "09:58", url: "https://stream.zeno.fm/sqnysca5u0hvv" },
+    // Terere mix
+    { inicio: "09:03", fin: "09:58", url: "https://stream.zeno.fm/dvmzwjv13azvv" },
     // Latin Pop
     { inicio: "10:03", fin: "10:58", url: "https://stream.zeno.fm/2sk0s285ag0uv" },
     // Regueton Exitos
@@ -395,25 +397,21 @@
     // Romanticas
     { inicio: "23:03", fin: "23:58", url: "https://stream.zeno.fm/ux9p55q8qeruv" },
     // Mix tropicales que esta arriba de 00 a 4am y los domingos 
-    { inicio: "04:00", fin: "05:00", url: "https://uk6freenew.listen2myradio.com/live.mp3?typeportmount=s1_3501_stream_989041836" },
+    { inicio: "04:59", fin: "05:00", url: "https://uk6freenew.listen2myradio.com/live.mp3?typeportmount=s1_3501_stream_989041836" },
     { inicio: "00:00", fin: "23:59", url: "https://listen.radioking.com/radio/749137/stream/815860" }
   ];
-  
+
   function convertirHoraAMinutos(horaStr) {
     const [h, m] = horaStr.split(":").map(Number);
     return h * 60 + m;
   }
 
   function obtenerURLActualSegunHora() {
-  const fecha = new Date();
-  const dia = fecha.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-  const minutos = fecha.getHours() * 60 + fecha.getMinutes();
+    const fecha = new Date();
+    const dia = fecha.getDay();
+    const minutos = fecha.getHours() * 60 + fecha.getMinutes();
+    if (dia === 0) return horarios[0].url;
 
-  if (dia === 0) {
-    // Domingo => usar solo el primer enlace
-    return horarios[0].url;
-  } else {
-    // Lunes a Sábado => aplicar según horario
     for (let slot of horarios) {
       if (minutos >= convertirHoraAMinutos(slot.inicio) && minutos <= convertirHoraAMinutos(slot.fin)) {
         return slot.url;
@@ -421,90 +419,146 @@
     }
     return horarios[horarios.length - 1].url;
   }
-}
 
-
-  let radio = new Audio();
-  let radioReproduciendo = false;
-  let currentURL = "";
+  // ==== REPRODUCTOR CON CROSSFADE CORREGIDO ====
+  let audioActual = new Audio();
+  let audioFuturo = new Audio();
+  let currentAudio = audioActual;
+  let currentBaseURL = "";
+  let enCrossfade = false;
+  let reproduciendo = false;
 
   function reproducirRadio() {
-    const nuevaURL = obtenerURLActualSegunHora();
-    if (currentURL !== nuevaURL) {
-      radio.src = nuevaURL + "?_=" + new Date().getTime();  // <-- aquí agregué el parámetro anti-cache
-      currentURL = nuevaURL;
+    const nuevaBaseURL = obtenerURLActualSegunHora();
+    if (currentBaseURL === nuevaBaseURL && reproduciendo) return;
+    if (reproduciendo) {
+      enCrossfade = true;
+      audioFuturo.src = nuevaBaseURL + "?_=" + new Date().getTime();
+      audioFuturo.volume = 0;
+      audioFuturo.play().then(() => {
+        crossfadeTo(audioFuturo);
+      });
+    } else {
+      currentAudio.src = nuevaBaseURL + "?_=" + new Date().getTime();
+      currentAudio.volume = 1;
+      currentAudio.play();
     }
-    radio.play();
-    radioReproduciendo = true;
-    
-gtag('event', 'inicio_radio', {
-  'event_category': 'Radio',
-  'event_label': window.location.href,
-  'non_interaction': true
-});
-    
-    document.getElementById("playBtn").style.backgroundImage = "url('pausa.png')";
-    document.getElementById("statusText").innerText = "DETENER";
-    document.getElementById("ondas").style.visibility = "visible";
-    document.getElementById("enVivo").style.display = "block";
-  }
 
-  function detenerRadio() {
-    radio.pause();
-    radioReproduciendo = false;
-    document.getElementById("playBtn").style.backgroundImage = "url('play.png')";
-    document.getElementById("statusText").innerText = "REPRODUCIR";
-    document.getElementById("ondas").style.visibility = "hidden";
-    document.getElementById("enVivo").style.display = "none";
-  }
-
-  function toggleRadio() {
-    radioReproduciendo ? detenerRadio() : reproducirRadio();
-  }
-
-  setInterval(() => {
-    if (radioReproduciendo) {
-      const nuevaURL = obtenerURLActualSegunHora();
-      if (currentURL !== nuevaURL) {
-        reproducirRadio(); // Actualiza la URL y reinicia
-      }
-    }
-  }, 60000); // chequea cada minuto
-
-  window.onload = () => {
-    mostrarTab('radio', document.querySelector('.btn-radio'));
-  };
-
-  // Banner rotativo automático
-  let bannerIndex = 0;
-  const banners = document.querySelectorAll('.banner-carousel a');
-  setInterval(() => {
-    banners[bannerIndex].classList.remove('active');
-    bannerIndex = (bannerIndex + 1) % banners.length;
-    banners[bannerIndex].classList.add('active');
-  }, 5000);
-  
-  // Enviar evento a Google Analytics cada 5 minutos si la radio está reproduciéndose
-setInterval(() => {
-  if (radioReproduciendo) {
-    gtag('event', 'reproduciendo_radio', {
+    currentBaseURL = nuevaBaseURL;
+    reproduciendo = true;
+    actualizarUI(true);
+    gtag('event', 'inicio_radio', {
       'event_category': 'Radio',
-      'event_label': currentURL,
+      'event_label': window.location.href,
       'non_interaction': true
     });
   }
-}, 300000); // 300000 ms = 5 minutos
-</script>
-  <script>
+
+  function crossfadeTo(nuevoAudio) {
+    const intervalo = setInterval(() => {
+      if (currentAudio.volume > 0) {
+        currentAudio.volume = Math.max(0, currentAudio.volume - 0.1);
+        nuevoAudio.volume = Math.min(1, nuevoAudio.volume + 0.1);
+      } else {
+        clearInterval(intervalo);
+        currentAudio.pause();
+        currentAudio.volume = 1;
+        [currentAudio, audioFuturo] = [nuevoAudio, currentAudio];
+        currentBaseURL = nuevoAudio.src.split("?")[0];
+        enCrossfade = false;
+      }
+    }, 300);
+  }
+
+  function detenerRadio() {
+    currentAudio.pause();
+    reproduciendo = false;
+    currentBaseURL = "";
+    actualizarUI(false);
+  }
+
+  function toggleRadio() {
+    reproduciendo ? detenerRadio() : reproducirRadio();
+  }
+
+  function actualizarUI(activo) {
+    document.getElementById("playBtn").style.backgroundImage = activo ? "url('pausa.png')" : "url('play.png')";
+    document.getElementById("statusText").innerText = activo ? "DETENER" : "REPRODUCIR";
+    document.getElementById("ondas").style.visibility = activo ? "visible" : "hidden";
+    document.getElementById("enVivo").style.display = activo ? "block" : "none";
+  }
+
+  // ==== CAMBIO AUTOMÁTICO DE ESTACIÓN ====
+  setInterval(() => {
+    if (reproduciendo && !enCrossfade) {
+      const nuevaBaseURL = obtenerURLActualSegunHora();
+      if (nuevaBaseURL !== currentBaseURL) {
+        reproducirRadio();
+      }
+    }
+  }, 60000);
+
+  // ==== CAMBIO DE PESTAÑAS ====
+  function mostrarTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelector('.tv-button').style.display = tabId === 'radio' ? 'block' : 'none';
+    document.getElementById('tvDropdown').style.display = 'none';
+  }
+
+  // ==== BOTÓN TV ====
+  function toggleTVMenu() {
+    const menu = document.getElementById('tvDropdown');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+  }
+
+  // ==== ROTACIÓN AUTOMÁTICA DE BANNERS ====
+  let bannerIndex = 0;
+  const banners = document.querySelectorAll('.banner-carousel a');
+  setInterval(() => {
+    if (banners.length > 0) {
+      banners[bannerIndex].classList.remove('active');
+      bannerIndex = (bannerIndex + 1) % banners.length;
+      banners[bannerIndex].classList.add('active');
+    }
+  }, 5000);
+
+  // ==== REDES SOCIALES (app vs web) ====
   function abrirApp(appURL, fallbackURL) {
     const timeout = setTimeout(() => {
       window.open(fallbackURL, '_blank');
     }, 1000);
-
     window.location = appURL;
-
     window.addEventListener('blur', () => clearTimeout(timeout));
   }
+
+  // ==== CARGA INICIAL ====
+  window.onload = () => {
+    mostrarTab('radio', document.querySelector('.btn-radio'));
+  };
+
+  // ==== ANALYTICS CADA 5 MINUTOS ====
+  setInterval(() => {
+    if (reproduciendo) {
+      gtag('event', 'reproduciendo_radio', {
+        'event_category': 'Radio',
+        'event_label': currentBaseURL,
+        'non_interaction': true
+      });
+    }
+  }, 300000);
+
+  function mostrarProgramacion() {
+  document.getElementById("modalProgramacion").style.display = "flex";
+}
+
+function cerrarProgramacion() {
+  document.getElementById("modalProgramacion").style.display = "none";
+}
+
 </script>
 </body>
 </html>
