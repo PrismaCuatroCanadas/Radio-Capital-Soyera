@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario de Cuatro Cañadas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 15px 10px;
+    }
+
+    table {
+      margin: auto;
+      border-collapse: collapse;
+      width: 95%;
+      max-width: 500px;
+      border: 2px solid #444;
+      border-radius: 8px;
+    }
+
+    th {
+      background-color: #ff0000;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 6px;
+    }
+
+    td {
+      border: 1px solid #666;
+      width: 13.5%;
+      height: 26px;
+      vertical-align: top;
+      position: relative;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 2px;
+      background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+
+    .today {
+      border: 4px solid red !important;
+    }
+
+    .domingo {
+      color: #ff0000 !important;
+    }
+
+    .feriado {
+      background: linear-gradient(145deg, #ffb8b8, #ff9898) !important;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .importante {
+      background: linear-gradient(145deg, #ffe890, #ffd870) !important;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .comunidad {
+      background: linear-gradient(145deg, #b6ff89, #96ff69) !important;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .unidad {
+      background: linear-gradient(145deg, #9fd5ff, #7fc5ff) !important;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .multi-event-cell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-number {
+      position: relative;
+      z-index: 10;
+      font-weight: bold;
+      color: #000;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .event-stripe {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .event-stripe.feriado {
+      background: linear-gradient(145deg, #ffb8b8, #ff9898) !important;
+    }
+
+    .event-stripe.importante {
+      background: linear-gradient(145deg, #ffe890, #ffd870) !important;
+    }
+
+    .event-stripe.comunidad {
+      background: linear-gradient(145deg, #b6ff89, #96ff69) !important;
+    }
+
+    .event-stripe.unidad {
+      background: linear-gradient(145deg, #9fd5ff, #7fc5ff) !important;
+    }
+
+    .event-list {
+      max-width: 95%;
+      margin: 15px auto;
+      background-color: #fff8dc00;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .event-item {
+      padding: 6px;
+      margin-bottom: 6px;
+      border-radius: 4px;
+    }
+
+    .info-text {
+      margin-top: 5px;
+      padding: 5px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      border-left: 4px solid #007bff;
+    }
+
+    .info-text p {
+      font-size: 10px;
+      margin: 2px 0;
+      line-height: 0.9;
+      color: #666;
+      text-align: center;
+    }
+
+    .month-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 10px;
+    }
+
+    .month-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 200px;
+      padding: 6px 10px;
+      background: linear-gradient(145deg, #d4d4d4, #b8b8b8);
+      border-radius: 8px;
+      font-size: 14px;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.7),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.2);
+      border: 1px solid #a0a0a0;
+    }
+
+    .month-wrapper button {
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: all 0.2s ease;
+    }
+
+    .month-wrapper button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .month-wrapper button:active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .month-label {
+      flex-grow: 1;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 18px;
+      }
+      td {
+        height: 23px;
+        font-size: 18px;
+      }
+      .event-item {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 Calendario de Cuatro Cañadas</h1>
+
+  <div class="month-nav">
+    <div class="month-wrapper">
+      <button onclick="cambiarMes(-1)">⬅️</button>
+      <span class="month-label" id="mesActual">Mes</span>
+      <button onclick="cambiarMes(1)">➡️</button>
+    </div>
+  </div>
+
+  <table id="calendar"></table>
+
+  <div class="event-list" id="eventList">
+    <strong>📌 Fechas importantes en Cuatro Cañadas:</strong>
+    <div id="eventItemsComunidad"></div>
+    <div id="eventItemsUnidad"></div>
+    
+    <div class="info-text">
+      <p>📌 Las fechas de Cuatro Cañadas han sido elaborado a partir de una recolección propia de datos. Si formas parte de una comunidad o unidad educativa y deseas corregir o complementar alguna fecha, no dudes en comunicarte con nosotros al 60025300.</p>
+      <p>💬 Tu aporte es valioso para preservar y fortalecer nuestra identidad cultural.</p>
+    </div>
+    
+    <strong style="margin-top: 20px; display: block;">📌 Fechas importantes en Bolivia:</strong>
+    <div id="eventItemsFeriado"></div>
+    <div id="eventItemsImportante"></div>
+  </div>
+
+  <script>
+    let mesSeleccionado = new Date().getMonth();
+    let anioSeleccionado = new Date().getFullYear();
+
+    const eventos = {
+      "1-1": [["feriado", "Año Nuevo 🎉"]],
+      "1-6": [["importante", "Dia de los Reyes Magos"]],
+      "1-22": [["feriado", "Día de la Fundación del Estado Plurinacional 🇧🇴"]],
+      "1-28": [["comunidad", "Creación del Municipio de Cuatro Cañadas 🏛️"]],
+      "2-10": [["importante", "Aniversario de Oruro 🏛️"]],
+      "3-8": [["importante", "Día Internacional de la Mujer 👩"]],
+      "3-9": [["importante", "Día del Padre 👨"]],
+      "3-18": [["unidad", "Aniversario de la Unidad Educativa Perla Del Oriente"]],
+      "3-23": [["importante", "Día de la Reinvindicaión Marítima"]],
+      "4-3": [["comunidad", "Aniversario de la Comunidad 3 de Abril"]],
+      "4-10": [["unidad", "Aniversario de la Unidad Educativa Monte Rico B"]],
+      "4-12": [["importante", "Día del Niño Boliviano 👧🧒"]],
+      "4-15": [["importante", "Aniversario de Tarija 🏛️"]],
+      "4-18": [["unidad", "Aniversario de la Unidad Educativa Palestina"]],
+      "4-22": [["importante", "Día de la Tierra 🌍"]],
+      "4-23": [["importante", "Día del Libro 📚"]],
+      "4-26": [["importante", "Día de la Secretaria 💼"]],
+      "5-1": [["feriado", "Día del Trabajo 🛠️"]],
+      "5-12": [["unidad", "Aniversario de la Unidad Educativa Nacional Cuatro Cañadas"]],
+      "5-25": [["comunidad", "Aniversario de la Comunidad Providencia"], ["importante", "Aniversario de Chuquisaca (Sucre) 🏛️"]],
+      "5-27": [["importante", "Día de la Madre ❤️"]],
+      "6-5": [["comunidad", "Aniversario de la Comunidad 5 de Junio"]],
+      "6-6": [["importante", "Día del Maestro 👩‍🏫"]],
+      "6-8": [["comunidad", "Aniversario de la Comunidad Independencia"]],
+      "6-11": [["unidad", "Aniversario de la Unidad Educativa José Luis Castro"]],
+      "6-14": [["comunidad", "Aniversario de la Comunidad 14 de Junio"]],
+      "6-20": [["unidad", "Aniversario de la Unidad Educativa San Antonio"]],
+      "6-21": [["feriado", "Año Nuevo Andino Amazónico 🌄"]],
+      "6-22": [["comunidad", "Aniversario de la Comunidad Las Palmas"]],
+      "7-1": [["comunidad", "Aniversario de la Comunidad Linares"]],
+      "7-13": [["comunidad", "Aniversario de la Comunidad Nuevo Palmar"]],
+      "7-16": [["importante", "Aniversario de La Paz 🏛️"]],
+      "7-27": [["unidad", "Aniversario de la Unidad Educativa Juan Pablo II"]],
+      "7-28": [["comunidad", "Aniversario del Pueblo de Cuatro Cañadas 🎉"]],
+      "8-2": [["importante", "Día del Campesino Boliviano 🌾"]],
+      "8-6": [["feriado", "Dia de la Independencia de Bolivia 🇧🇴"]],
+      "8-17": [["comunidad", "Aniversario de la Comunidad Monte Rico"], ["unidad", "Aniversario de la Unidad Educativa Sagrado Corazón De Jesús"], ["importante", "Dia de la Bandera Boliviana 🇧🇴"]],
+      "8-26": [["comunidad", "Aniversario de la Comunidad 26 de Agosto"], ["unidad", "Aniversario de la Unidad Educativa 26 de Agosto"]],
+      "9-3": [["comunidad", "Aniversario de la Comunidad Puerto Rico"]],
+      "9-14": [["comunidad", "Aniversario de la Comunidad Naciones Unidas"], ["importante", "Aniversario de Cochabamba 🏛️"]],
+      "9-17": [["comunidad", "Aniversario de la Comunidad Villa Primavera"]],
+      "9-24": [["feriado", "Aniversario de Santa Cruz (feriado departamental)🏛️"]],
+      "9-28": [["comunidad", "Aniversario de la Comunidad San Miguel de los Ángeles"], ["comunidad", "Aniversario de la Comunidad San Miguel Florida"]],
+      "9-29": [["unidad", "Aniversario de la Unidad Educativa San Miguel de los Ángeles"]],
+      "10-1": [["importante", "Aniversario de Pando 🏛️"]],
+      "10-11": [["importante", "Día de la Mujer Boliviana 👩"]],
+      "10-12": [["comunidad", "Aniversario de la Comunidad Colonia 12 de Octubre"]],
+      "10-18": [["comunidad", "Aniversario de la Comunidad Los Olivos"]],
+      "11-2": [["feriado", "Todos Santos 🕯️"]],
+      "11-10": [["importante", "Aniversario de Potosí 🏛️"]],
+      "11-18": [["importante", "Aniversario de Beni 🏛️"]],
+      "12-25": [["feriado", "Navidad 🎄"]]
+    };
+
+    function getBoliviaDate() {
+      const utc = new Date().getTime() + (new Date().getTimezoneOffset() * 60000);
+      return new Date(utc - (4 * 60 * 60 * 1000));
+    }
+
+    // --- FUNCIONES PARA FECHAS MÓVILES ---
+    function calcularPascua(year) {
+      // Algoritmo de Meeus/Jones/Butcher
+      let a = year % 19;
+      let b = Math.floor(year / 100);
+      let c = year % 100;
+      let d = Math.floor(b / 4);
+      let e = b % 4;
+      let f = Math.floor((b + 8) / 25);
+      let g = Math.floor((b - f + 1) / 3);
+      let h = (19 * a + b - d - g + 15) % 30;
+      let i = Math.floor(c / 4);
+      let k = c % 4;
+      let l = (32 + 2 * e + 2 * i - h - k) % 7;
+      let m = Math.floor((a + 11 * h + 22 * l) / 451);
+      let mes = Math.floor((h + l - 7 * m + 114) / 31) - 1; // 0=enero
+      let dia = ((h + l - 7 * m + 114) % 31) + 1;
+      return new Date(year, mes, dia);
+    }
+
+    function sumarDias(fecha, dias) {
+      let nueva = new Date(fecha);
+      nueva.setDate(nueva.getDate() + dias);
+      return nueva;
+    }
+
+    function agregarFeriadosMoviles(eventos, year) {
+      const pascua = calcularPascua(year);
+      // Carnaval: lunes y martes antes de Miércoles de Ceniza (47 y 48 días antes de Pascua)
+      const carnavalLunes = sumarDias(pascua, -48);
+      const carnavalMartes = sumarDias(pascua, -47);
+      // Viernes Santo: 2 días antes de Pascua
+      const viernesSanto = sumarDias(pascua, -2);
+      // Corpus Christi: 60 días después de Pascua
+      const corpusChristi = sumarDias(pascua, 60);
+
+      // Formato clave: "mes-dia"
+      const feriados = [
+        [carnavalLunes, ["feriado", "Carnaval 🎭"]],
+        [carnavalMartes, ["feriado", "Carnaval 🎭"]],
+        [viernesSanto, ["feriado", "Viernes Santo ✝️"]],
+        [corpusChristi, ["feriado", "Corpus Christi ⛪"]],
+      ];
+      feriados.forEach(([fecha, evento]) => {
+        const clave = `${fecha.getMonth() + 1}-${fecha.getDate()}`;
+        if (!eventos[clave]) {
+          eventos[clave] = [evento];
+        } else {
+          // Evitar duplicados
+          if (!eventos[clave].some(e => e[1] === evento[1])) {
+            eventos[clave].push(evento);
+          }
+        }
+      });
+    }
+
+    function renderCalendar() {
+      const calendar = document.getElementById('calendar');
+      const eventItemsComunidad = document.getElementById('eventItemsComunidad');
+      const eventItemsUnidad = document.getElementById('eventItemsUnidad');
+      const eventItemsFeriado = document.getElementById('eventItemsFeriado');
+      const eventItemsImportante = document.getElementById('eventItemsImportante');
+      
+      eventItemsComunidad.innerHTML = '';
+      eventItemsUnidad.innerHTML = '';
+      eventItemsFeriado.innerHTML = '';
+      eventItemsImportante.innerHTML = '';
+
+      const month = mesSeleccionado;
+      const year = anioSeleccionado;
+
+      const monthName = new Date(year, month).toLocaleString('es-BO', { month: 'long' });
+      const capitalizedMonthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      document.getElementById('mesActual').textContent = `${capitalizedMonthName} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+
+      const today = getBoliviaDate();
+      const todayDate = today.getDate();
+      const todayMonth = today.getMonth();
+      const todayYear = today.getFullYear();
+
+      let html = `<tr>
+        <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th>
+        <th>Vie</th><th>Sáb</th><th>Dom</th>
+      </tr><tr>`;
+
+      // Ajustar el primer día para que la semana comience con lunes
+      let adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+      
+      let day = 1;
+      for (let i = 0; i < 42; i++) {
+        if (i < adjustedFirstDay || day > lastDate) {
+          html += '<td></td>';
+        } else {
+          const key = `${month + 1}-${day}`;
+          const isToday = (day === todayDate && month === todayMonth && year === todayYear);
+          const classNames = [];
+
+          // Copiar eventos para no modificar el original
+          let eventosCopia = JSON.parse(JSON.stringify(eventos));
+          agregarFeriadosMoviles(eventosCopia, year);
+
+          if (eventosCopia[key]) {
+            eventosCopia[key].forEach(([tipo]) => {
+              if (!classNames.includes(tipo)) classNames.push(tipo);
+            });
+          }
+
+          if (isToday) classNames.push("today");
+
+          // Agregar clase domingo si es domingo (día 0 de la semana)
+          const currentDate = new Date(year, month, day);
+          if (currentDate.getDay() === 0) {
+            classNames.push("domingo");
+          }
+
+          html += `<td class="${classNames.join(" ")}">${day}</td>`;
+
+          if (eventosCopia[key]) {
+            const dateText = new Date(year, month, day).toLocaleDateString('es-BO', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long'
+            });
+            const capitalizedDateText = dateText.charAt(0).toUpperCase() + dateText.slice(1);
+            
+            // Crear divisiones verticales para múltiples eventos
+            const eventCount = eventosCopia[key].length;
+            if (eventCount > 1) {
+              const cellContent = `<div class="multi-event-cell">
+                <div class="event-number">${day}</div>
+                ${eventosCopia[key].map(([tipo], index) => {
+                  const width = 100 / eventCount;
+                  const left = (index * width);
+                  return `<div class="event-stripe ${tipo}" style="width: ${width}%; left: ${left}%;"></div>`;
+                }).join('')}
+              </div>`;
+              html = html.replace(`<td class="${classNames.join(" ")}">${day}</td>`, 
+                                 `<td class="${classNames.join(" ")}">${cellContent}</td>`);
+            }
+            
+            eventosCopia[key].forEach(([tipo, descripcion]) => {
+              const eventHtml = `<div class="event-item ${tipo}">
+                <strong>${capitalizedDateText}:</strong> ${descripcion}
+              </div>`;
+              
+              if (tipo === 'comunidad') {
+                eventItemsComunidad.innerHTML += eventHtml;
+              } else if (tipo === 'unidad') {
+                eventItemsUnidad.innerHTML += eventHtml;
+              } else if (tipo === 'feriado') {
+                eventItemsFeriado.innerHTML += eventHtml;
+              } else if (tipo === 'importante') {
+                eventItemsImportante.innerHTML += eventHtml;
+              }
+            });
+          }
+
+          day++;
+        }
+        if (i % 7 === 6) html += '</tr><tr>';
+      }
+
+      calendar.innerHTML = html;
+    }
+
+    function cambiarMes(valor) {
+      mesSeleccionado += valor;
+      if (mesSeleccionado < 0) {
+        mesSeleccionado = 11;
+        anioSeleccionado--;
+      } else if (mesSeleccionado > 11) {
+        mesSeleccionado = 0;
+        anioSeleccionado++;
+      }
+      renderCalendar();
+    }
+
+    renderCalendar();
+  </script>
+</body>
+</html>
