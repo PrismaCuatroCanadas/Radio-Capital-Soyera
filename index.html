@@ -277,6 +277,9 @@
     <img src="logo capital soyera.png" alt="Logo Capital Soyera" />
     RADIO LA VOZ DE LA CAPITAL SOYERA
   </h4>
+  
+
+  
   <div class="play-button">
     <div id="enVivo">EN VIVO</div>
     <button id="playBtn" onclick="toggleRadio()"></button>
@@ -290,17 +293,32 @@
   </div>
 
   <!-- BOTÓN DE PROGRAMACIÓN -->
-<div style="text-align: center; margin-top: 10px;">
-  <button onclick="mostrarProgramacion()" style="background: #28a745; border: none; padding: 8px 16px; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 14px;">
-    📅 Programación
-  </button>
-</div>
+  <div style="text-align: center; margin-top: 10px;">
+    <button onclick="mostrarProgramacion()" style="background: #28a745; border: none; padding: 8px 16px; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      📻 Nuestra Programación
+    </button>
+  </div>
+
+  <!-- BOTÓN DE CALENDARIO -->
+  <div style="text-align: center; margin-top: 10px;">
+    <button onclick="mostrarCalendario()" style="background: #007bff; border: none; padding: 8px 16px; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      📆 Calendario Cuatro Cañadas
+    </button>
+  </div>
 
 <!-- MODAL CON IMAGEN OCULTO AL INICIO -->
 <div id="modalProgramacion" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 0; margin: 0;">
   <div style="position: relative; max-width: 95vw; max-height: 95vh;">
     <img src="programacion.jpg" alt="Programación" style="width: 100%; height: auto; border-radius: 8px; max-height: 90vh;" />
     <button onclick="cerrarProgramacion()" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; font-size: 18px; cursor: pointer;">×</button>
+  </div>
+</div>
+
+<!-- MODAL CALENDARIO OCULTO AL INICIO -->
+<div id="modalCalendario" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 0; margin: 0;">
+  <div style="position: relative; max-width: 95vw; max-height: 95vh; width: 100%; height: 100%;">
+    <iframe src="calendario cuatro cañadas.html" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+    <button onclick="cerrarCalendario()" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; font-size: 18px; cursor: pointer;">×</button>
   </div>
 </div>
 
@@ -559,6 +577,14 @@ function cerrarProgramacion() {
   document.getElementById("modalProgramacion").style.display = "none";
 }
 
+function mostrarCalendario() {
+  document.getElementById("modalCalendario").style.display = "flex";
+}
+
+function cerrarCalendario() {
+  document.getElementById("modalCalendario").style.display = "none";
+}
+
 </script>
 </body>
-</html>
+</html> 
