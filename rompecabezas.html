@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Rompecabezas 3x3 con Imagen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #f7f7f7;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-family: Arial, sans-serif;
+    }
+    #main-container {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h2 {
+      margin-top: 32px;
+      font-size: 1.5em;
+    }
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 0;
+      margin: 32px auto 0 auto;
+      background: #222;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px #0002;
+      width: 96vw;
+      max-width: 420px;
+      height: 96vw;
+      max-height: 420px;
+      min-width: 240px;
+      min-height: 240px;
+      touch-action: none;
+      position: relative;
+    }
+    .pieza {
+      width: 100%;
+      height: 100%;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      border-radius: 0;
+      box-shadow: none;
+      user-select: none;
+      border: 1px solid #e0e0e0;
+      transition: box-shadow 0.2s, border 0.2s, opacity 0.2s;
+      touch-action: none;
+      position: relative;
+      z-index: 1;
+      display: block;
+      cursor: pointer;
+    }
+    .pieza.seleccionada {
+      border: 2px solid #2196f3;
+      box-shadow: 0 0 0 4px #2196f3, 0 0 12px #2196f3;
+      z-index: 2;
+    }
+    .pieza.animar-intercambio {
+      animation: pop-intercambio 0.25s;
+    }
+    .pieza.correcta {
+      border: 1.5px solid #43b94a;
+      box-shadow: 0 0 8px 2px #43b94a55;
+      z-index: 3;
+      pointer-events: none;
+      cursor: default;
+    }
+    @keyframes pop-intercambio {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.15); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    #mensaje {
+      font-size: 1.1em;
+      margin: 10px 0 10px 0;
+      color: #2196f3;
+      min-height: 1.5em;
+    }
+    #felicidades {
+      display: none;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #felicidades span {
+      font-size: 1.1em;
+      color: #2196f3;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    #felicidades-titulo {
+      font-size:2.5em;
+      color:#2196f3;
+      font-family: 'Luckiest Guy', cursive, Arial, sans-serif;
+      font-weight: normal;
+      letter-spacing:2px;
+      margin-bottom:8px;
+      text-transform:uppercase;
+      text-shadow: 2px 4px 2px rgba(0,0,0,0.35);
+      animation: pop-felicitacion 0.7s;
+    }
+    @keyframes pop-felicitacion {
+      0%{transform:scale(0.5) rotate(-10deg); opacity:0;}
+      70%{transform:scale(1.15) rotate(3deg); opacity:1;}
+      100%{transform:scale(1) rotate(0deg); opacity:1;}
+    }
+    #btn-siguiente {
+      margin-top: 10px;
+      font-size: 1.15em;
+      padding: 14px 44px;
+      border-radius: 12px;
+      border: none;
+      background: #1ec94c;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 18px #1ec94c55, 0 2px 8px #0002;
+      transition: background 0.2s, box-shadow 0.2s;
+      display: inline-block;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+    #btn-siguiente:hover {
+      background: #159c38;
+      box-shadow: 0 6px 24px #159c3855, 0 2px 8px #0002;
+    }
+    #btn-reiniciar {
+      margin-top: 10px;
+      font-size: 0.95em;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      background: #ffe0b2;
+      color: #b26a00;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: none;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+      margin: 0;
+    }
+    #btn-reiniciar:hover {
+      background: #ffd699;
+      color: #a05a00;
+    }
+    .botones-felicitacion {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+      width: auto;
+      box-sizing: border-box;
+      text-align: center;
+      margin: 0 auto;
+    }
+    .boton-sonido {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      width: 44px;
+      height: 44px;
+      background: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5em;
+      color: #43b94a;
+      cursor: pointer;
+      outline: none;
+      box-shadow:
+        0 2px 8px #0002, /* sombra exterior */
+        inset 0 2px 8px #bdbdbd, /* sombra interior */
+        0 1px 0 #fff inset;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      z-index: 10;
+    }
+    .boton-sonido:active {
+      background: #e0f7e9;
+      box-shadow:
+        0 1px 4px #0002,
+        inset 0 1px 6px #a5d6a7,
+        0 1px 0 #fff inset;
+    }
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.1em;
+      }
+      #puzzle {
+        max-width: 98vw;
+        min-width: 180px;
+        min-height: 180px;
+        height: 98vw;
+        max-height: 98vw;
+        gap: 0;
+        margin-top: 18px;
+      }
+      #felicidades span {
+        font-size: 1em;
+      }
+      #btn-siguiente {
+        font-size: 0.95em;
+        padding: 10px 24px;
+      }
+      #btn-reiniciar {
+        font-size: 0.95em;
+        padding: 10px 24px;
+      }
+      .boton-sonido {
+        right: 8px;
+        top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="main-container">
+    <h2>Rompecabezas 3x3</h2>
+    <button id="btn-sonido" title="Activar sonido" class="boton-sonido">🔇</button>
+    <div id="mensaje"></div>
+    <div id="puzzle"></div>
+    <div id="nivel-indicador" style="margin-top:12px; font-size:1.1em; color:#444; font-weight:bold; text-align:center;"></div>
+    <div id="felicidades">
+      <div id="felicidades-titulo" style="font-size:2.2em; color:#2196f3; font-weight:bold; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">FELICIDADES</div>
+      <div id="felicidades-nivel" style="font-size:1.15em; color:#444; font-weight:bold; margin-bottom:12px;"></div>
+      <div class="botones-felicitacion">
+        <button id="btn-reiniciar">Reiniciar</button>
+        <button id="btn-siguiente">Siguiente</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const filas = 3, columnas = 3;
+    const totalImagenes = 20;
+    let indiceImagen = 1;
+    let piezas = [];
+    let posiciones = [];
+    const puzzle = document.getElementById('puzzle');
+    const mensaje = document.getElementById('mensaje');
+    let tam = 300; // Valor por defecto, se ajusta luego
+
+    function nombreImagen() {
+      return `imagen${indiceImagen}.jpg`;
+    }
+
+    function ajustarTamano() {
+      // Ajustar tamaño de las piezas según el tamaño real del puzzle
+      const rect = puzzle.getBoundingClientRect();
+      tam = Math.round(rect.width / columnas);
+    }
+
+    function actualizarNivelIndicador() {
+      const nivel = indiceImagen;
+      const nivelDiv = document.getElementById('nivel-indicador');
+      nivelDiv.textContent = `Nivel ${nivel}`;
+    }
+
+    function crearRompecabezas() {
+      piezas = [];
+      posiciones = [];
+      puzzle.innerHTML = '';
+      mensaje.textContent = '';
+      piezaSeleccionada = null;
+      actualizarNivelIndicador();
+      const img = new Image();
+      img.src = nombreImagen();
+      img.onload = () => {
+        ajustarTamano();
+        for (let i = 0; i < filas * columnas; i++) {
+          const fila = Math.floor(i / columnas);
+          const col = i % columnas;
+          const div = document.createElement('div');
+          div.className = 'pieza';
+          div.style.backgroundImage = `url('${img.src}')`;
+          div.setAttribute('data-correcta', i);
+          div.setAttribute('data-pos', i);
+          div.onclick = seleccionarOPermutar;
+          piezas.push(div);
+          posiciones.push(i);
+        }
+        actualizarFondos();
+        // Mostrar imagen resuelta 1 segundo, luego mezclar
+        dibujarResuelto();
+        setTimeout(() => {
+          mezclar();
+          dibujar();
+        }, 1000);
+      };
+      img.onerror = () => {
+        mensaje.textContent = 'No se pudo cargar la imagen: ' + nombreImagen();
+      };
+    }
+
+    function actualizarFondos() {
+      // Ajustar fondo de cada pieza según tamaño real del puzzle
+      const rect = puzzle.getBoundingClientRect();
+      const ancho = rect.width;
+      const alto = rect.height;
+      for (let idx = 0; idx < piezas.length; idx++) {
+        const fila = Math.floor(idx / columnas);
+        const col = idx % columnas;
+        piezas[idx].style.backgroundSize = `${ancho}px ${alto}px`;
+        piezas[idx].style.backgroundPosition = `-${col * (ancho / columnas)}px -${fila * (alto / filas)}px`;
+        piezas[idx].style.width = `${ancho / columnas}px`;
+        piezas[idx].style.height = `${alto / filas}px`;
+      }
+    }
+
+    function mezclar() {
+      let intentos = 0;
+      do {
+        for (let i = posiciones.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [posiciones[i], posiciones[j]] = [posiciones[j], posiciones[i]];
+        }
+        intentos++;
+        // Si por casualidad el puzzle queda resuelto, o alguna pieza está en su lugar, repetimos
+      } while (posiciones.some((val, idx) => val === idx) && intentos < 50);
+    }
+
+    function seleccionarOPermutar(e) {
+      const idx = parseInt(this.getAttribute('data-pos'));
+      // Si la pieza está en su posición correcta, no hacer nada
+      if (idx === parseInt(this.getAttribute('data-correcta'))) return;
+      if (piezaSeleccionada === null) {
+        piezaSeleccionada = idx;
+        dibujar();
+      } else if (piezaSeleccionada === idx) {
+        piezaSeleccionada = null;
+        dibujar();
+      } else {
+        intercambiarConAnimacion(piezaSeleccionada, idx);
+        piezaSeleccionada = null;
+      }
+    }
+
+    function intercambiarConAnimacion(idx1, idx2) {
+      // Animar ambas piezas
+      const pieza1 = piezas[posiciones[idx1]];
+      const pieza2 = piezas[posiciones[idx2]];
+      pieza1.classList.add('animar-intercambio');
+      pieza2.classList.add('animar-intercambio');
+      // Sonido de mover (si está activado y existe el audio)
+      if (sonidoActivado && window.sonidoMover) {
+        try { window.sonidoMover.currentTime = 0; window.sonidoMover.play().catch(()=>{}); } catch(e){}
+      }
+      setTimeout(() => {
+        pieza1.classList.remove('animar-intercambio');
+        pieza2.classList.remove('animar-intercambio');
+        // Intercambiar posiciones
+        [posiciones[idx1], posiciones[idx2]] = [posiciones[idx2], posiciones[idx1]];
+        dibujar();
+        if (completado()) {
+          mensaje.textContent = '';
+          mostrarLogro();
+        }
+      }, 250);
+    }
+
+    function dibujar() {
+      puzzle.innerHTML = '';
+      for (let i = 0; i < posiciones.length; i++) {
+        const idx = posiciones[i];
+        const pieza = piezas[idx];
+        pieza.setAttribute('data-pos', i);
+        pieza.classList.remove('seleccionada');
+        pieza.classList.remove('correcta');
+        if (piezaSeleccionada === i) {
+          pieza.classList.add('seleccionada');
+        }
+        // Opacidad según si está en su posición correcta
+        if (i === parseInt(pieza.getAttribute('data-correcta'))) {
+          pieza.style.opacity = '1';
+          pieza.classList.add('correcta');
+        } else {
+          pieza.style.opacity = '0.65';
+        }
+        puzzle.appendChild(pieza);
+      }
+    }
+
+    function dibujarResuelto() {
+      puzzle.innerHTML = '';
+      for (let i = 0; i < piezas.length; i++) {
+        const pieza = piezas[i];
+        pieza.setAttribute('data-pos', i);
+        pieza.classList.remove('seleccionada');
+        pieza.classList.remove('correcta');
+        pieza.style.opacity = '1';
+        puzzle.appendChild(pieza);
+      }
+    }
+
+    function completado() {
+      for (let i = 0; i < posiciones.length; i++) {
+        if (posiciones[i] !== i) return false;
+      }
+      return true;
+    }
+    // Felicidades y botón siguiente
+    const felicidadesDiv = document.getElementById('felicidades');
+    const btnSiguiente = document.getElementById('btn-siguiente');
+    const btnReiniciar = document.getElementById('btn-reiniciar');
+    btnSiguiente.onclick = () => {
+      felicidadesDiv.style.display = 'none';
+      indiceImagen++;
+      if (indiceImagen > totalImagenes) indiceImagen = 1;
+      crearRompecabezas();
+    };
+    btnReiniciar.onclick = () => {
+      felicidadesDiv.style.display = 'none';
+      crearRompecabezas();
+    };
+    function mostrarLogro() {
+      const felicidadesNivel = document.getElementById('felicidades-nivel');
+      const felicidadesTitulo = document.getElementById('felicidades-titulo');
+      // Cambiar a solo FELICIDADES sin emojis
+      felicidadesTitulo.innerHTML = '¡ FELICIDADES !';
+      felicidadesTitulo.style.animation = 'none';
+      // Forzar reflow para reiniciar animación
+      void felicidadesTitulo.offsetWidth;
+      felicidadesTitulo.style.animation = '';
+      felicidadesNivel.textContent = `Nivel ${indiceImagen} completado`;
+      felicidadesDiv.style.display = 'block';
+      // Sonido de logro (si está activado y existe el audio)
+      if (sonidoActivado && window.sonidoLogro) {
+        try { window.sonidoLogro.currentTime = 0; window.sonidoLogro.play().catch(()=>{}); } catch(e){}
+      }
+    }
+    // Redibujar al cambiar tamaño de pantalla
+    window.addEventListener('resize', () => {
+      ajustarTamano();
+      actualizarFondos();
+    });
+    // Control de sonido
+    let sonidoActivado = false;
+    const btnSonido = document.getElementById('btn-sonido');
+    btnSonido.onclick = function() {
+      sonidoActivado = !sonidoActivado;
+      btnSonido.textContent = sonidoActivado ? '🔊' : '🔇';
+      btnSonido.title = sonidoActivado ? 'Desactivar sonido' : 'Activar sonido';
+    };
+    // Si existen los audios, los referenciamos globalmente para el control
+    window.sonidoMover = document.getElementById('sonido-mover');
+    window.sonidoLogro = document.getElementById('sonido-logro');
+    // Iniciar
+    crearRompecabezas();
+  </script>
+  <audio id="sonido-mover" src="mover.mp3" preload="auto"></audio>
+  <audio id="sonido-logro" src="logro.mp3" preload="auto"></audio>
+</body>
+</html>
