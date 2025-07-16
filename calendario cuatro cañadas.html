@@ -143,6 +143,24 @@
       padding: 6px;
       margin-bottom: 6px;
       border-radius: 4px;
+      transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+    }
+    .event-item.selected {
+      border: 2.5px solid #000000;
+      background: #e0e0e0;
+      box-shadow: 0 0 8px #333333;
+    }
+    .clickable {
+      cursor: pointer;
+      transition: box-shadow 0.2s, border 0.2s;
+    }
+    .clickable:hover {
+      box-shadow: 0 0 8px #ff9800;
+      border: 2px solid #ff9800 !important;
+    }
+    .clickable.selected-cell {
+      filter: brightness(0.85);
+      border: 2.5px solid #000 !important;
     }
 
     .info-text {
@@ -418,21 +436,16 @@
           let eventosCopia = JSON.parse(JSON.stringify(eventos));
           agregarFeriadosMoviles(eventosCopia, year);
 
+          if (isToday) classNames.push("today");
           if (eventosCopia[key]) {
             eventosCopia[key].forEach(([tipo]) => {
               if (!classNames.includes(tipo)) classNames.push(tipo);
             });
+            // Hacer la celda clickeable y agregar data-fecha
+            html += `<td class="${classNames.join(" ")} clickable" data-fecha="${month + 1}-${day}">${day}</td>`;
+          } else {
+            html += `<td class="${classNames.join(" ")}">${day}</td>`;
           }
-
-          if (isToday) classNames.push("today");
-
-          // Agregar clase domingo si es domingo (día 0 de la semana)
-          const currentDate = new Date(year, month, day);
-          if (currentDate.getDay() === 0) {
-            classNames.push("domingo");
-          }
-
-          html += `<td class="${classNames.join(" ")}">${day}</td>`;
 
           if (eventosCopia[key]) {
             const dateText = new Date(year, month, day).toLocaleDateString('es-BO', {
@@ -441,7 +454,6 @@
               month: 'long'
             });
             const capitalizedDateText = dateText.charAt(0).toUpperCase() + dateText.slice(1);
-            
             // Crear divisiones verticales para múltiples eventos
             const eventCount = eventosCopia[key].length;
             if (eventCount > 1) {
@@ -453,15 +465,14 @@
                   return `<div class="event-stripe ${tipo}" style="width: ${width}%; left: ${left}%;"></div>`;
                 }).join('')}
               </div>`;
-              html = html.replace(`<td class="${classNames.join(" ")}">${day}</td>`, 
-                                 `<td class="${classNames.join(" ")}">${cellContent}</td>`);
+              // Mantener la clase today si corresponde
+              html = html.replace(`<td class=\"${classNames.join(" ")} clickable\" data-fecha=\"${month + 1}-${day}\">${day}</td>`, 
+                                 `<td class=\"${classNames.join(" ")} clickable\" data-fecha=\"${month + 1}-${day}\">${cellContent}</td>`);
             }
-            
             eventosCopia[key].forEach(([tipo, descripcion]) => {
-              const eventHtml = `<div class="event-item ${tipo}">
+              const eventHtml = `<div class="event-item ${tipo}" data-fecha="${month + 1}-${day}">
                 <strong>${capitalizedDateText}:</strong> ${descripcion}
               </div>`;
-              
               if (tipo === 'comunidad') {
                 eventItemsComunidad.innerHTML += eventHtml;
               } else if (tipo === 'unidad') {
@@ -480,6 +491,21 @@
       }
 
       calendar.innerHTML = html;
+      // --- NUEVO: Agregar listeners para resaltar eventos ---
+      setTimeout(() => {
+        document.querySelectorAll('.clickable').forEach(cell => {
+          cell.addEventListener('click', function() {
+            const fecha = this.getAttribute('data-fecha');
+            // Quitar selección previa
+            document.querySelectorAll('.event-item.selected').forEach(e => e.classList.remove('selected'));
+            document.querySelectorAll('.clickable.selected-cell').forEach(e => e.classList.remove('selected-cell'));
+            // Resaltar los eventos correspondientes
+            document.querySelectorAll(`.event-item[data-fecha='${fecha}']`).forEach(e => e.classList.add('selected'));
+            // Oscurecer la celda seleccionada
+            this.classList.add('selected-cell');
+          });
+        });
+      }, 10);
     }
 
     function cambiarMes(valor) {
