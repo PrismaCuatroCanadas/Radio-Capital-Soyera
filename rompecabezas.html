@@ -10,7 +10,8 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      background: #f7f7f7;
+      background: #f7f7f7 url('fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
     }
     body {
       min-height: 100vh;
@@ -295,9 +296,9 @@
     </div>
   </div>
   <script>
-    const filas = 3, columnas = 3;
     const totalImagenes = 20;
     let indiceImagen = 1;
+    let filas = 3, columnas = 3;
     let piezas = [];
     let posiciones = [];
     const puzzle = document.getElementById('puzzle');
@@ -305,7 +306,14 @@
     let tam = 300; // Valor por defecto, se ajusta luego
 
     function nombreImagen() {
-      return `imagen${indiceImagen}.jpg`;
+      // Niveles 1-5: imagen aleatoria entre imagen1.jpg e imagen5.jpg
+      if (indiceImagen >= 1 && indiceImagen <= 5) {
+        let imgIndex = Math.floor(Math.random() * 5) + 1;
+        return `imagen${imgIndex}.jpg`;
+      }
+      // Para niveles 21-40, usar las mismas imágenes cíclicamente
+      let imgIndex = ((indiceImagen - 1) % totalImagenes) + 1;
+      return `imagen${imgIndex}.jpg`;
     }
 
     function ajustarTamano() {
@@ -335,6 +343,14 @@
     }
 
     function crearRompecabezas() {
+      // Cambiar a 4x4 para niveles 21-40
+      if (indiceImagen >= 21 && indiceImagen <= 40) {
+        filas = 4;
+        columnas = 4;
+      } else {
+        filas = 3;
+        columnas = 3;
+      }
       piezas = [];
       posiciones = [];
       puzzle.innerHTML = '';
