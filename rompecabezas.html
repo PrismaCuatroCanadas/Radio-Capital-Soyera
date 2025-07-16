@@ -37,7 +37,7 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 0;
-      margin: 32px auto 0 auto;
+      margin: 10px auto 0 auto;
       background: #222;
       border-radius: 8px;
       box-shadow: 0 2px 10px #0002;
@@ -120,7 +120,7 @@
       letter-spacing:2px;
       margin-bottom:8px;
       text-transform:uppercase;
-      text-shadow: 2px 4px 2px rgba(0,0,0,0.35),
+      text-shadow: 2px 4px 2px rgb(0, 58, 250),
                    4px 0px 0px #fff, -4px 0px 0px #fff, 0px 4px 0px #fff, 0px -4px 0px #fff,
                    3px 3px 0px #fff, -3px 3px 0px #fff, 3px -3px 0px #fff, -3px -3px 0px #fff;
       /* Quitamos text-stroke para que el borde sea solo externo */
@@ -223,8 +223,8 @@
     }
     .nivel-boton {
       display: inline-block;
-      margin-top: 38px;
-      margin-bottom: 10px;
+      margin-top: 50px;
+      margin-bottom: 0px;
       font-size: 1.35em;
       font-weight: bold;
       color: #fff;
@@ -280,10 +280,11 @@
       ROMPECABEZAS<br>
       <span style="display:block; font-size:0.95em; margin-top:0.15em;">CUATRO CAÑADAS</span>
     </h2>
+    <div id="nivel-indicador" class="nivel-boton" style="margin-top:10px; margin-bottom:10px;"></div>
     <button id="btn-sonido" title="Activar sonido" class="boton-sonido">🔇</button>
     <div id="mensaje"></div>
     <div id="puzzle"></div>
-    <div id="nivel-indicador" class="nivel-boton"></div>
+    <div id="miniatura-resuelta" style="width:90px; height:90px; margin: 18px auto 0 auto; display:flex; align-items:center; justify-content:center;"></div>
     <div id="felicidades">
       <div id="felicidades-titulo" style="font-size:2.2em; color:#2196f3; font-weight:bold; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">FELICIDADES</div>
       <div id="felicidades-nivel" style="font-size:1.15em; color:#444; font-weight:bold; margin-bottom:12px;"></div>
@@ -319,6 +320,20 @@
       nivelDiv.textContent = `Nivel ${nivel}`;
     }
 
+    function actualizarMiniatura() {
+      const miniatura = document.getElementById('miniatura-resuelta');
+      miniatura.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = nombreImagen();
+      img.alt = 'Miniatura resuelta';
+      img.style.width = '90px';
+      img.style.height = '90px';
+      img.style.objectFit = 'cover';
+      img.style.borderRadius = '8px';
+      img.style.boxShadow = '0 2px 8px #0002';
+      miniatura.appendChild(img);
+    }
+
     function crearRompecabezas() {
       piezas = [];
       posiciones = [];
@@ -326,6 +341,9 @@
       mensaje.textContent = '';
       piezaSeleccionada = null;
       actualizarNivelIndicador();
+      actualizarMiniatura();
+      // Mostrar la miniatura al iniciar o reiniciar
+      document.getElementById('miniatura-resuelta').style.display = 'flex';
       const img = new Image();
       img.src = nombreImagen();
       img.onload = () => {
@@ -348,7 +366,7 @@
         setTimeout(() => {
           mezclar();
           dibujar();
-        }, 2000);
+        }, 1200);
       };
       img.onerror = () => {
         mensaje.textContent = 'No se pudo cargar la imagen: ' + nombreImagen();
@@ -470,14 +488,16 @@
       indiceImagen++;
       if (indiceImagen > totalImagenes) indiceImagen = 1;
       crearRompecabezas();
-      // Volver a mostrar el indicador de nivel
       document.getElementById('nivel-indicador').style.display = '';
+      actualizarMiniatura();
+      document.getElementById('miniatura-resuelta').style.display = 'flex';
     };
     btnReiniciar.onclick = () => {
       felicidadesDiv.style.display = 'none';
       crearRompecabezas();
-      // Volver a mostrar el indicador de nivel
       document.getElementById('nivel-indicador').style.display = '';
+      actualizarMiniatura();
+      document.getElementById('miniatura-resuelta').style.display = 'flex';
     };
     function mostrarLogro() {
       const felicidadesNivel = document.getElementById('felicidades-nivel');
@@ -490,8 +510,8 @@
       felicidadesTitulo.style.animation = '';
       felicidadesNivel.textContent = `Nivel ${indiceImagen} completado`;
       felicidadesDiv.style.display = 'block';
-      // Ocultar el indicador de nivel
-      document.getElementById('nivel-indicador').style.display = 'none';
+      // Ocultar la miniatura al completar el nivel
+      document.getElementById('miniatura-resuelta').style.display = 'none';
       // Sonido de logro (si está activado y existe el audio)
       if (sonidoActivado && window.sonidoLogro) {
         try { window.sonidoLogro.currentTime = 0; window.sonidoLogro.play().catch(()=>{}); } catch(e){}
