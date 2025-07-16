@@ -130,7 +130,7 @@
 
     .event-list {
       max-width: 95%;
-      margin: 15px auto;
+      margin: 5px auto;
       background-color: #fff8dc00;
       border: 1px solid #ccc;
       padding: 10px;
@@ -146,9 +146,9 @@
       transition: box-shadow 0.2s, border 0.2s, background 0.2s;
     }
     .event-item.selected {
-      border: 2.5px solid #000000;
+      border: 2.5px solid #0066cc;
       background: #e0e0e0;
-      box-shadow: 0 0 8px #333333;
+      box-shadow: 0 0 8px #0066cc;
     }
     .clickable {
       cursor: pointer;
@@ -160,7 +160,7 @@
     }
     .clickable.selected-cell {
       filter: brightness(0.85);
-      border: 2.5px solid #000 !important;
+      border: 2.5px solid #0066cc !important;
     }
 
     .info-text {
@@ -252,6 +252,8 @@
   </div>
 
   <table id="calendar"></table>
+
+  <p style="text-align: center; margin: 5px 0; font-size: 14px; color: #666; font-style: italic; border: none;">Toca la fecha para ver que el aniversario</p>
 
   <div class="event-list" id="eventList">
     <strong>📌 Fechas importantes en Cuatro Cañadas:</strong>
