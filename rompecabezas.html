@@ -32,6 +32,9 @@
     h2 {
       margin-top: 32px;
       font-size: 1.5em;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 2px 2px 8px #000a;
     }
     #puzzle {
       display: grid;
@@ -288,7 +291,7 @@
     <div id="miniatura-resuelta" style="width:90px; height:90px; margin: 18px auto 0 auto; display:flex; align-items:center; justify-content:center;"></div>
     <div id="felicidades">
       <div id="felicidades-titulo" style="font-size:2.2em; color:#2196f3; font-weight:bold; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">FELICIDADES</div>
-      <div id="felicidades-nivel" style="font-size:1.15em; color:#444; font-weight:bold; margin-bottom:12px;"></div>
+      <div id="felicidades-nivel" style="font-size:1.15em; color:#FFD600; font-weight:bold; margin-bottom:12px;"></div>
       <div class="botones-felicitacion">
         <button id="btn-reiniciar">Reiniciar</button>
         <button id="btn-siguiente">Siguiente</button>
@@ -306,11 +309,6 @@
     let tam = 300; // Valor por defecto, se ajusta luego
 
     function nombreImagen() {
-      // Niveles 1-5: imagen aleatoria entre imagen1.jpg e imagen5.jpg
-      if (indiceImagen >= 1 && indiceImagen <= 5) {
-        let imgIndex = Math.floor(Math.random() * 5) + 1;
-        return `imagen${imgIndex}.jpg`;
-      }
       // Para niveles 21-40, usar las mismas imágenes cíclicamente
       let imgIndex = ((indiceImagen - 1) % totalImagenes) + 1;
       return `imagen${imgIndex}.jpg`;
