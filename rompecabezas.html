@@ -102,6 +102,7 @@
       max-width: 420px;
       margin-left: auto;
       margin-right: auto;
+      /* El fondo del cuadro grande se define en .felicidades-tarjeta */
     }
     #felicidades span {
       font-size: 1.1em;
@@ -119,8 +120,12 @@
       letter-spacing:2px;
       margin-bottom:8px;
       text-transform:uppercase;
-      text-shadow: 2px 4px 2px rgba(0,0,0,0.35);
-      animation: pop-felicitacion 0.7s;
+      text-shadow: 2px 4px 2px rgba(0,0,0,0.35),
+                   4px 0px 0px #fff, -4px 0px 0px #fff, 0px 4px 0px #fff, 0px -4px 0px #fff,
+                   3px 3px 0px #fff, -3px 3px 0px #fff, 3px -3px 0px #fff, -3px -3px 0px #fff;
+      /* Quitamos text-stroke para que el borde sea solo externo */
+      animation: pop-felicitacion 2.1s;
+      animation-iteration-count: infinite;
     }
     @keyframes pop-felicitacion {
       0%{transform:scale(0.5) rotate(-10deg); opacity:0;}
@@ -142,6 +147,15 @@
       display: inline-block;
       margin: 0;
       letter-spacing: 1px;
+      /* Animación de pulso */
+      animation: pulso-boton 2s infinite;
+    }
+    @keyframes pulso-boton {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.13); }
+      50% { transform: scale(1.18); }
+      70% { transform: scale(1.13); }
+      100% { transform: scale(1); }
     }
     #btn-siguiente:hover {
       background: #159c38;
@@ -207,6 +221,25 @@
         inset 0 1px 6px #a5d6a7,
         0 1px 0 #fff inset;
     }
+    .nivel-boton {
+      display: inline-block;
+      margin-top: 38px;
+      margin-bottom: 10px;
+      font-size: 1.35em;
+      font-weight: bold;
+      color: #fff;
+      background: #2196f3;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      box-shadow: 0 2px 10px #2196f355, 0 1px 4px #0002;
+      transition: background 0.2s, box-shadow 0.2s;
+      outline: none;
+      cursor: default;
+    }
     @media (max-width: 600px) {
       h2 {
         font-size: 1.1em;
@@ -235,16 +268,22 @@
         right: 8px;
         top: 8px;
       }
+      #felicidades-titulo {
+        font-size: 1.3em !important;
+      }
     }
   </style>
 </head>
 <body>
   <div id="main-container">
-    <h2>Rompecabezas 3x3</h2>
+    <h2 style="text-transform:uppercase; line-height:1.1; margin-bottom:0.2em; text-align:center;">
+      ROMPECABEZAS<br>
+      <span style="display:block; font-size:0.95em; margin-top:0.15em;">CUATRO CAÑADAS</span>
+    </h2>
     <button id="btn-sonido" title="Activar sonido" class="boton-sonido">🔇</button>
     <div id="mensaje"></div>
     <div id="puzzle"></div>
-    <div id="nivel-indicador" style="margin-top:12px; font-size:1.1em; color:#444; font-weight:bold; text-align:center;"></div>
+    <div id="nivel-indicador" class="nivel-boton"></div>
     <div id="felicidades">
       <div id="felicidades-titulo" style="font-size:2.2em; color:#2196f3; font-weight:bold; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">FELICIDADES</div>
       <div id="felicidades-nivel" style="font-size:1.15em; color:#444; font-weight:bold; margin-bottom:12px;"></div>
@@ -309,7 +348,7 @@
         setTimeout(() => {
           mezclar();
           dibujar();
-        }, 1000);
+        }, 2000);
       };
       img.onerror = () => {
         mensaje.textContent = 'No se pudo cargar la imagen: ' + nombreImagen();
@@ -431,10 +470,14 @@
       indiceImagen++;
       if (indiceImagen > totalImagenes) indiceImagen = 1;
       crearRompecabezas();
+      // Volver a mostrar el indicador de nivel
+      document.getElementById('nivel-indicador').style.display = '';
     };
     btnReiniciar.onclick = () => {
       felicidadesDiv.style.display = 'none';
       crearRompecabezas();
+      // Volver a mostrar el indicador de nivel
+      document.getElementById('nivel-indicador').style.display = '';
     };
     function mostrarLogro() {
       const felicidadesNivel = document.getElementById('felicidades-nivel');
@@ -447,6 +490,8 @@
       felicidadesTitulo.style.animation = '';
       felicidadesNivel.textContent = `Nivel ${indiceImagen} completado`;
       felicidadesDiv.style.display = 'block';
+      // Ocultar el indicador de nivel
+      document.getElementById('nivel-indicador').style.display = 'none';
       // Sonido de logro (si está activado y existe el audio)
       if (sonidoActivado && window.sonidoLogro) {
         try { window.sonidoLogro.currentTime = 0; window.sonidoLogro.play().catch(()=>{}); } catch(e){}
