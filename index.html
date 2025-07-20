@@ -358,6 +358,42 @@
     .btn-plateado {
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
     }
+    /* BOTONES TV MODAL */
+    .tv-botones-container {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 18px;
+    }
+    .btn-tv {
+      width: 112px;
+      height: 52px;
+      border-radius: 16px;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 12px 2px rgba(80,80,80,0.25), inset 0 2px 16px 2px rgba(255, 60, 0, 0.884), inset 0 -4px 12px 2px rgba(12, 2, 2, 0.733), 0 1.5px 0 0 rgba(255, 255, 255, 0.966) inset;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.3s;
+      outline: none;
+      cursor: pointer;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none !important;
+    }
+    .btn-tv-unitel {
+      background: linear-gradient(180deg, #e53935 0%, #b71c1c 100%);
+    }
+    .btn-tv-reduno {
+      background: linear-gradient(180deg, #ff9800 0%, #e65100 100%);
+    }
+    .btn-tv:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 24px 4px rgba(80,80,80,0.35), inset 0 4px 24px 4px #ffffff33, inset 0 -6px 18px 4px #b0b0b0, 0 2px 0 0 #fff3 inset;
+    }
   </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G2L2R327D5"></script>
   <script>
@@ -371,10 +407,19 @@
 <body>
 
 <!-- Botón TV -->
-<button class="tv-button" onclick="toggleTVMenu()">TV 📺</button>
-<div class="tv-dropdown" id="tvDropdown">
-  <a href="https://www.dailymotion.com/video/x9ie7h0" target="_blank">RED UNO</a>
-  <a href="https://www.dailymotion.com/video/x7wzxiw" target="_blank">UNITEL</a>
+<button class="tv-button" onclick="mostrarTV()">TV 📺</button>
+<!-- MODAL TV OCULTO AL INICIO -->
+<div id="modalTV" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 0; margin: 0;">
+  <div style="position: relative; max-width: 95vw; max-height: 95vh; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <img src="programacion-tv.jpg" alt="Programación TV" style="width: 100%; height: auto; border-radius: 8px; max-height: 90vh; display: block;" />
+    <!-- Botones UNITEL y RED UNO sobre la parte inferior de la imagen -->
+    <div class="tv-botones-container" style="position: absolute; left: 0; right: 0; bottom: 50%; transform: translateY(350%); display: flex; justify-content: center; gap: 32px; pointer-events: none;">
+      <a href="https://www.dailymotion.com/video/x7wzxiw" target="_blank" class="btn-tv btn-tv-unitel" style="pointer-events: auto;">UNITEL</a>
+      <a href="https://www.dailymotion.com/video/x9ie7h0" target="_blank" class="btn-tv btn-tv-reduno" style="pointer-events: auto;">RED UNO</a>
+    </div>
+    <!-- Botón cerrar -->
+    <button onclick="cerrarTV()" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; font-size: 18px; cursor: pointer;">×</button>
+  </div>
 </div>
 
 <!-- RADIO -->
@@ -664,9 +709,11 @@
   }
 
   // ==== BOTÓN TV ====
-  function toggleTVMenu() {
-    const menu = document.getElementById('tvDropdown');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+  function mostrarTV() {
+    document.getElementById('modalTV').style.display = 'flex';
+  }
+  function cerrarTV() {
+    document.getElementById('modalTV').style.display = 'none';
   }
 
   // ==== ROTACIÓN AUTOMÁTICA DE BANNERS ====
